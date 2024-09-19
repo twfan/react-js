@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../components/Elements/Button/Index";
 import CardProduct from "../components/Fragments/CardProduct";
 
@@ -64,6 +64,22 @@ const ProductsPage = () => {
     }
   };
 
+  const cartRef = useRef(JSON.parse(localStorage.getItem("cart")) || []);
+  const handleAddToCartRef = (id) => {
+    cartRef.current = [...cartRef.current, { id, qty: 1 }];
+    localStorage.setItem("cart", JSON.stringify(cartRef.current));
+  };
+
+  const totalPriceref = useRef(null);
+
+  useEffect(() => {
+    if (cart.length > 0) {
+      totalPriceref.current.style.display = "table-row";
+    } else {
+      totalPriceref.current.style.display = "none";
+    }
+  }, [cart]);
+
   return (
     <>
       <div className="flex justify-end items-center h-20 text-white bg-blue-600 px-10">
@@ -115,7 +131,7 @@ const ProductsPage = () => {
                   </tr>
                 );
               })}
-              <tr>
+              <tr ref={totalPriceref}>
                 <td colSpan={3}>
                   <b>Total Price</b>
                 </td>
