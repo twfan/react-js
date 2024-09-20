@@ -1,31 +1,41 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../Elements/Button/Index";
 import InputForm from "../Elements/Input";
+import { login } from "../../services/auth.service";
 
 const FormLogin = () => {
+  const [loginFailed, setLoginFailed] = useState("");
   const handleLogin = (event) => {
     event.preventDefault();
-    let email = event.target.email.value;
-    let password = event.target.password.value;
-    localStorage.setItem("email", email);
-    localStorage.setItem("password", password);
-    console.log("Handle login");
-    window.location.href = "/products";
+    const data = {
+      username: event.target.username.value,
+      password: event.target.password.value,
+    };
+    login(data, (status, res) => {
+      if (status) {
+        localStorage.setItem("token", res);
+        window.location.href = "/products";
+      } else {
+        console.log(res.response.data);
+        setLoginFailed(res.response.data);
+      }
+    });
   };
 
-  const emailRef = useRef(null);
+  const usernameRef = useRef(null);
 
   useEffect(() => {
-    emailRef.current.focus();
+    usernameRef.current.focus();
   }, []);
+
   return (
     <form onSubmit={handleLogin}>
       <InputForm
-        label="email"
-        type="email"
-        placeholder="example@gmail.com"
-        name="email"
-        ref={emailRef}
+        label="Username"
+        type="text"
+        placeholder="twfan"
+        name="username"
+        ref={usernameRef}
       ></InputForm>
       <InputForm
         label="password"
@@ -36,6 +46,9 @@ const FormLogin = () => {
       <Button classname="bg-blue-600 w-full" type="submit">
         Login
       </Button>
+      {loginFailed && (
+        <p className="text-red-500 text-center my-5 text-xs">{loginFailed}</p>
+      )}
     </form>
   );
 };

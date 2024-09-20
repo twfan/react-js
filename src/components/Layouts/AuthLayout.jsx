@@ -19,7 +19,7 @@ const AuthLayout = (props) => {
 const Navigation = ({ type }) => {
   if (type === "login") {
     return (
-      <p className="text-sm">
+      <p className="text-sm text-center">
         Don't have an account?
         <Link to="/register" className="font-bold">
           Sign up
@@ -28,7 +28,7 @@ const Navigation = ({ type }) => {
     );
   } else {
     return (
-      <p className="text-sm">
+      <p className="text-sm text-center">
         Already have an account?
         <Link to="/login" className="font-bold">
           Login
